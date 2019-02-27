@@ -24,7 +24,7 @@ public class UserController<T> {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> saveUser(@RequestBody User user){
-		APiStatus status = service.addUser(user);
+		APiStatus status = service.addUser(user);//1234
 		return (status.getStatus().equals(ResponseMessage.SUCCESS))? 
 				ResponseEntity.status(HttpStatus.CREATED).body(status) : 
 					ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
