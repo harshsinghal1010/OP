@@ -56,25 +56,39 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public APiStatus<User> login(User user) {
 		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public APiStatus<User> deleteUser(int id) {
 		// TODO Auto-generated method stub
-		return null;
+		User u= userRepo.findById(id);
+		if(u!=null) {
+			u.setDeleted(true);
+			userRepo.save(u);
+			return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.DELETE_SUCCESS,u);
+		}else {
+		return new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.USER_EXIST,null);
 	}
-
+	}
 	@Override
 	public APiStatus<User> updateUser(User user) {
 		// TODO Auto-generated method stub
-		return null;
+	//	if(userRepo.findById(user.getId()!=null)) {
+		User user2=userRepo.findOne(user.getId());
+		if(user2!=null) {
+			user2.setAge(user.getAge());
+			User user1 = userRepo.save(user);
+			return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.UPDATE_SUCCESS,user);
+		}else
+		return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.USER_EXIST,null);
 	}
 
 	@Override
 	public List<User> getAllUser() {
 		// TODO Auto-generated method stub
-		return null;
+		return userRepo.findAll();
 	}
 
 }
