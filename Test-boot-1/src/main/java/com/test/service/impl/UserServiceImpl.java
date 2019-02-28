@@ -75,10 +75,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public APiStatus<User> updateUser(User user) {
 		// TODO Auto-generated method stub
-	//	if(userRepo.findById(user.getId()!=null)) {
-		User user2=userRepo.findOne(user.getId());
-		if(user2!=null) {
-			user2.setAge(user.getAge());
+		if(userRepo.findById(user.getId()!=null)) {
 			User user1 = userRepo.save(user);
 			return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.UPDATE_SUCCESS,user);
 		}else

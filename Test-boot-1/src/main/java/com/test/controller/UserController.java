@@ -38,11 +38,6 @@ public class UserController<T> {
 		if(u!=null)
 		return ResponseEntity.status(HttpStatus.OK).body(u);
 		else
-<<<<<<< HEAD
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("user not found");
-
-	}
-=======
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_EXIST);
 
 	}
@@ -73,17 +68,7 @@ public class UserController<T> {
 			else
 				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_EXIST);
 }
->>>>>>> master
 	
-	@GetMapping("/getuser/email")
-	public ResponseEntity<?> getOneUser(@RequestParam("userEmail") String email) {
-		User u = service.getUserByEmail(email);
-		if(u!=null)
-		return ResponseEntity.status(HttpStatus.OK).body(u);
-		else
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user not found");
-
-	}
 	
 	@GetMapping("/deleteuser/id")
 	public ResponseEntity<?> deleteUser(@RequestParam("userId") Integer id) {
