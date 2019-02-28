@@ -11,4 +11,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	public User findByEmail (String email);
 	
 	public User findById(int id);
+<<<<<<< HEAD
+=======
+
+    
+	public boolean findById(boolean b);
+
+	public User findOne(Integer id);
+>>>>>>> master
 }

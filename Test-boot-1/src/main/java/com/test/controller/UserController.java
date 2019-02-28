@@ -1,5 +1,7 @@
 package com.test.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +38,42 @@ public class UserController<T> {
 		if(u!=null)
 		return ResponseEntity.status(HttpStatus.OK).body(u);
 		else
+<<<<<<< HEAD
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("user not found");
 
 	}
+=======
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_EXIST);
+
+	}
+	
+	@GetMapping("/getuser/email")
+	public ResponseEntity<?> getOneUser(@RequestParam("userEmail") String email) {
+		User u = service.getUserByEmail(email);
+		if(u!=null)
+		return ResponseEntity.status(HttpStatus.OK).body(u);
+		else
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_EXIST);
+
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> userLogin(@RequestBody User user){
+		APiStatus status = service.login(user);
+		return (status.getStatus().equals(ResponseMessage.SUCCESS))? 
+				ResponseEntity.status(HttpStatus.CREATED).body(status) : 
+					ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
+	}
+	
+	@GetMapping("/getuser/all")
+	public ResponseEntity<?> getAll(){
+		List<User> u = service.getAllUser();
+		if(u!=null)
+			return ResponseEntity.status(HttpStatus.OK).body(u);
+			else
+				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_EXIST);
+}
+>>>>>>> master
 	
 	@GetMapping("/getuser/email")
 	public ResponseEntity<?> getOneUser(@RequestParam("userEmail") String email) {
@@ -50,6 +85,21 @@ public class UserController<T> {
 
 	}
 	
+	@GetMapping("/deleteuser/id")
+	public ResponseEntity<?> deleteUser(@RequestParam("userId") Integer id) {
+		APiStatus<User> status = service.deleteUser(id);
+		return (status.getStatus().equals(ResponseMessage.SUCCESS))? 
+				ResponseEntity.status(HttpStatus.CREATED).body(status) : 
+					ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
+	}
+	
+	@PostMapping("/updateuser/id")
+	public ResponseEntity<?> updateUser(@RequestBody User user) {
+		APiStatus<User> status = service.updateUser(user);
+		return (status.getStatus().equals(ResponseMessage.SUCCESS))? 
+				ResponseEntity.status(HttpStatus.CREATED).body(status) : 
+					ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
+	}
 	private ResponseEntity<?> successResponse(HttpStatus status , T body)
 	{
 		return ResponseEntity.status(status).body(body);
