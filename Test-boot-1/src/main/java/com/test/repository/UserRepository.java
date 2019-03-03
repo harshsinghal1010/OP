@@ -1,5 +1,7 @@
 package com.test.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,12 +10,13 @@ import com.test.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	public User findByEmail (String email);
+
+	public User findByEmailAndDeletedFalse (String email);
+	public User findByPasswordAndDeletedFalse (String password);
 	
-	public User findById(int id);
+	
+	public User findByIdAndDeletedFalse(int id);
+	
+	public List<User> findByDeletedFalse();
 
-    
-	public boolean findById(boolean b);
-
-	public User findOne(Integer id);
 }
