@@ -14,4 +14,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     
 	public boolean findById(boolean b);
+<<<<<<< HEAD
+=======
+
+	public User findOne(Integer id);
+>>>>>>> master
 }
