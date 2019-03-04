@@ -11,6 +11,7 @@ import com.test.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+
 	public User findByEmailAndDeletedFalse (String email);
 	public User findByPasswordAndDeletedFalse (String password);
 	

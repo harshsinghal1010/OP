@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -50,18 +51,21 @@ public class UserServiceImpl implements UserService {
 	public User getUserById(int id) {
 		// TODO Auto-generated method stub
 		
+
 		return userRepo.findByIdAndDeletedFalse(id);
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
 		// TODO Auto-generated method stub
+
 		return userRepo.findByEmailAndDeletedFalse(email);
 	}
 
 	@Override
 	public APiStatus<User> login(Login login) {
 		// TODO Auto-generated method stub
+
 		User user2=userRepo.findByEmailAndDeletedFalse(login.getEmail());
 		if(user2!=null) {
 			
@@ -78,12 +82,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public APiStatus<User> deleteUser(int id) {
 		// TODO Auto-generated method stub
+
 		User u= userRepo.findByIdAndDeletedFalse(id);
 		if(u!=null) {
 			u.setDeleted(true);
 			userRepo.save(u);
 			return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.DELETE_SUCCESS,u);
 		}else {
+
 		return new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.USER_NOT_FOUND,null);
 	}
 	}
@@ -93,6 +99,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public APiStatus<User> updateUser(int id,User user) {
 		// TODO Auto-generated method stub
+
 			
 			User u = userRepo.findByIdAndDeletedFalse(id);
 			
@@ -120,6 +127,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String imageUpload(MultipartFile file)  {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
+
+		return userRepo.findByDeletedFalse();//hello
+=======
 		
 		
 		String filename = Utill.generateUniqueFileName() + file.getOriginalFilename();
@@ -139,6 +150,7 @@ public class UserServiceImpl implements UserService {
     	
 
 		return filename;
+>>>>>>> 1a279f956ea978345fa534dbf5a8ba07d4ab6355
 	}
 
 }

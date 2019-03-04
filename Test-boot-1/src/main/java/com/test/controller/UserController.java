@@ -50,21 +50,26 @@ public class UserController{
 		if(u!=null)
 		return ResponseEntity.status(HttpStatus.OK).body(u);
 		else
+
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_NOT_FOUND);
 
 	}
 	
 	@GetMapping("/getuser/email")
+
 	public ResponseEntity<?> getOneUser(@RequestParam("email") String email) {
+
 		User u = service.getUserByEmail(email);
 		if(u!=null)
 		return ResponseEntity.status(HttpStatus.OK).body(u);
 		else
+
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_NOT_FOUND);
 
 	}
 	
 	@PostMapping("/login")
+
 	public ResponseEntity<?> userLogin(@RequestBody Login login){
 		//*************
 		APiStatus status = service.login(login);
@@ -72,6 +77,7 @@ public class UserController{
 				ResponseEntity.status(HttpStatus.CREATED).body(status) : 
 					ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
 	}
+
 	
 	@GetMapping("/getuser/")
 	public ResponseEntity<?> getAll(@RequestParam(name="page",defaultValue="0") int page , @RequestParam("limit") int limit){
@@ -82,7 +88,8 @@ public class UserController{
 			else
 				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_NOT_FOUND);
 }
-	
+
+
 	
 	@DeleteMapping("/deleteuser/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
@@ -97,6 +104,7 @@ public class UserController{
 	@PutMapping("/updateuser/{id}")
 	public ResponseEntity<?> updateUser(@PathVariable int id,@RequestBody User user) {
 		APiStatus<User> status = service.updateUser(id,user);
+
 		return (status.getStatus().equals(ResponseMessage.SUCCESS))? 
 				successResponse(HttpStatus.CREATED,status.getMessage(),status.getEntity()) : 
 					errorResponse(HttpStatus.UNPROCESSABLE_ENTITY , status.getMessage());
