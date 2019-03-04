@@ -2,6 +2,8 @@ package com.test.utill;
 
 public class ResponseMessage {
 	
+	public static final String UPLOAD_FOLDER="E:\\java material\\upload\\";
+	
 	public static final String SUCCESS = "Success";
 	public static final String FAILED = "Failed";
 	public static final String REGISTER_SUCCESS = "Registration Succesful";
@@ -13,4 +15,5 @@ public class ResponseMessage {
 	public static final String LOGIN_ERROR = "Wrong Email And Password";
 	public static final String UPDATE_SUCCESS = "User Update Succesful";
 	public static final String INVALID_ID = "Invalid User Id";
+	public static final String IMAGE_UPLOAD_ERROR = "Image Not Uploaded";
 }
