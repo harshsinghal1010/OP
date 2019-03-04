@@ -8,6 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity 
 public class User {
 	@Id
@@ -17,7 +22,10 @@ public class User {
 	@Column
 	private String userName;
 	private String email;
+	
+	@Column
 	private String password;
+	private String image;
 	
 	@Column
 	private String name;
@@ -26,6 +34,7 @@ public class User {
 	
 	
 	@Column(columnDefinition = "boolean default false", nullable = false)
+	@JsonIgnore
 	private boolean deleted;
 	
 	@OneToOne(cascade=CascadeType.PERSIST)
@@ -55,10 +64,11 @@ public class User {
 		this.email = email;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
-
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -102,6 +112,15 @@ public class User {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+	
 	
 
 }

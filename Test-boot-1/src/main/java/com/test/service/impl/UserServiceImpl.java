@@ -1,10 +1,15 @@
 package com.test.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.test.entity.User;
 import com.test.repository.UserRepository;
@@ -12,6 +17,7 @@ import com.test.service.UserService;
 import com.test.utill.APiStatus;
 import com.test.utill.Login;
 import com.test.utill.ResponseMessage;
+import com.test.utill.Utill;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -113,10 +119,38 @@ public class UserServiceImpl implements UserService {
 }
 
 	@Override
-	public List<User> getAllUser() {
+	public List<User> getAllUser(int page , int limit) {
+		// TODO Auto-generated method stub 
+		return userRepo.findByDeletedFalse(PageRequest.of(page, limit));//hello
+	}
+
+	@Override
+	public String imageUpload(MultipartFile file)  {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
 
 		return userRepo.findByDeletedFalse();//hello
+=======
+		
+		
+		String filename = Utill.generateUniqueFileName() + file.getOriginalFilename();
+		String path = ResponseMessage.UPLOAD_FOLDER+filename;
+    	File cf = new File(path);
+    	try {
+			cf.createNewFile();
+			FileOutputStream outputStream = new  FileOutputStream(cf);
+	    	outputStream.write(file.getBytes());
+	    	outputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			filename = null;
+		}
+    	
+    	
+
+		return filename;
+>>>>>>> 1a279f956ea978345fa534dbf5a8ba07d4ab6355
 	}
 
 }
