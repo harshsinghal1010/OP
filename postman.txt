@@ -1,2 +1,4 @@
-url
 https://www.getpostman.com/collections/a475b56ff9255338f84e
+
+email send url
+https://www.onlinetutorialspoint.com/spring-boot/how-to-send-spring-boot-mail-example.html
