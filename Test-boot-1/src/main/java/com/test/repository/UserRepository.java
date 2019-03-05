@@ -13,8 +13,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 
 	public User findByEmailAndDeletedFalse (String email);
-	public User findByPasswordAndDeletedFalse (String password);
 	
+	public User findByUserNameAndDeletedFalse(String username);
+	public User findByMobileAndDeletedFalse(Long mobile);
+	public User findByEmailOrUserNameAndDeletedFalse(String email,String username);
+	public User findByPasswordAndDeletedFalse (String password);
+
 	
 	public User findByIdAndDeletedFalse(int id);
 	

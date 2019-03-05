@@ -71,7 +71,7 @@ public class UserController{
 	@PostMapping("/login")
 
 	public ResponseEntity<?> userLogin(@RequestBody Login login){
-		//*************
+		//done
 		APiStatus status = service.login(login);
 		return (status.getStatus().equals(ResponseMessage.SUCCESS))? 
 				ResponseEntity.status(HttpStatus.CREATED).body(status) : 
@@ -80,8 +80,8 @@ public class UserController{
 
 	
 	@GetMapping("/getuser/")
-	public ResponseEntity<?> getAll(@RequestParam(name="page",defaultValue="0") int page , @RequestParam("limit") int limit){
-	// valid pagination
+	public ResponseEntity<?> getAll(@RequestParam(name="page",defaultValue="0") int page , @RequestParam(name="limit",defaultValue="2") int limit){
+	// valid pagination (done)
 		List<User> u = service.getAllUser(page,limit);
 		if(u!=null)
 			return ResponseEntity.status(HttpStatus.OK).body(u);
@@ -114,10 +114,9 @@ public class UserController{
 	
 	@PostMapping(path="/upload",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
 
-    public ResponseEntity<?> uploadFile(
-    		// only image upload
-            @RequestParam("file") MultipartFile uploadfile) throws IOException {
-
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile) throws IOException {
+		// only image upload
+		System.err.println(uploadfile.getContentType());
 		String name = service.imageUpload(uploadfile);
 		
         return (name==null)?errorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ResponseMessage.IMAGE_UPLOAD_ERROR) :

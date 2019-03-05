@@ -24,33 +24,36 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepo;
-	
 
-	
 	@Override
 	public APiStatus<User> addUser(User user) {
 		// TODO Auto-generated method stub
-		
-		if(userRepo.findByEmailAndDeletedFalse(user.getEmail())==null)
-		{
-		User u = userRepo.save(user);
-		
-		
-		return (u!=null) ?
-			 new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.REGISTER_SUCCESS,user):
-			 new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.REGISTER_FAILED,null);
+
+		if (userRepo.findByEmailAndDeletedFalse(user.getEmail()) == null) {
+			if (userRepo.findByUserNameAndDeletedFalse(user.getUserName()) == null) {
+				if (userRepo.findByMobileAndDeletedFalse(user.getMobile()) == null) {
+					User u = userRepo.save(user);
+
+					return (u != null)
+							? new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.REGISTER_SUCCESS, user)
+							: new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.REGISTER_FAILED, null);
+				} else {
+					return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.Mobile_EXIST, null);
+				}
+			} else {
+				return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USERNAME_EXIST, null);
+			}
 		}
+
 		else {
-			return new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.EMAIL_EXIST,null);
+			return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.EMAIL_EXIST, null);
 		}
-		
-	
+
 	}
 
 	@Override
 	public User getUserById(int id) {
 		// TODO Auto-generated method stub
-		
 
 		return userRepo.findByIdAndDeletedFalse(id);
 	}
@@ -66,91 +69,86 @@ public class UserServiceImpl implements UserService {
 	public APiStatus<User> login(Login login) {
 		// TODO Auto-generated method stub
 
-		User user2=userRepo.findByEmailAndDeletedFalse(login.getEmail());
-		if(user2!=null) {
-			
-			return (login.getPassword().equals(user2.getPassword())) ?
-					 new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.LOGIN_SUCCESS,user2):
-					 new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.LOGIN_ERROR,null);
-		}else {
-			return new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.LOGIN_ERROR,null);
+		User user2 = userRepo.findByEmailOrUserNameAndDeletedFalse(login.getEmail(), login.getUsername());
+		if (user2 != null) {
+
+			return (login.getPassword().equals(user2.getPassword()))
+					? new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.LOGIN_SUCCESS, user2)
+					: new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);
+		} else {
+
+			return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);
 		}
-		
-			}
-	
+
+	}
 
 	@Override
 	public APiStatus<User> deleteUser(int id) {
 		// TODO Auto-generated method stub
 
-		User u= userRepo.findByIdAndDeletedFalse(id);
-		if(u!=null) {
+		User u = userRepo.findByIdAndDeletedFalse(id);
+		if (u != null) {
 			u.setDeleted(true);
 			userRepo.save(u);
-			return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.DELETE_SUCCESS,u);
-		}else {
+			return new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS, u);
+		} else {
 
-		return new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.USER_NOT_FOUND,null);
+			return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_FOUND, null);
+		}
 	}
-	}
-	
-	
-	
+
 	@Override
-	public APiStatus<User> updateUser(int id,User user) {
+	public APiStatus<User> updateUser(int id, User user) {
 		// TODO Auto-generated method stub
 
-			
-			User u = userRepo.findByIdAndDeletedFalse(id);
-			
-			if(u!=null)
-			{
-			u.setAddress(user.getAddress());	
+		User u = userRepo.findByIdAndDeletedFalse(id);
+
+		if (u != null) {
+			u.setAddress(user.getAddress());
 			u.setAge(user.getAge());
 			u.setMobile(user.getMobile());
 			u.setName(user.getName());
-			
+
 			userRepo.save(u);
-			return new APiStatus<>(ResponseMessage.SUCCESS,ResponseMessage.UPDATE_SUCCESS,u);
+			return new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.UPDATE_SUCCESS, u);
 
-			}
-			else
-			return new APiStatus<>(ResponseMessage.FAILED,ResponseMessage.INVALID_ID,null);
-}
-
-	@Override
-	public List<User> getAllUser(int page , int limit) {
-		// TODO Auto-generated method stub 
-		return userRepo.findByDeletedFalse(PageRequest.of(page, limit));//hello
+		} else
+			return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.INVALID_ID, null);
 	}
 
 	@Override
-	public String imageUpload(MultipartFile file)  {
+	public List<User> getAllUser(int page, int limit) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
+	if(page>=0 && limit >=1) {
+		return userRepo.findByDeletedFalse(PageRequest.of(page, limit));// hello
+	}
+	return null;
+	}
 
-		return userRepo.findByDeletedFalse();//hello
-=======
-		
-		
+	@Override
+	public String imageUpload(MultipartFile file) {
+		// TODO Auto-generated method stub
+		//String regex= "image/([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+		String extention=file.getContentType();
+     if(extention.equalsIgnoreCase("image/jpeg") || extention.equalsIgnoreCase("image/png") || extention.equalsIgnoreCase("image/jpg")) {
 		String filename = Utill.generateUniqueFileName() + file.getOriginalFilename();
-		String path = ResponseMessage.UPLOAD_FOLDER+filename;
-    	File cf = new File(path);
-    	try {
+		String path = ResponseMessage.UPLOAD_FOLDER + filename;
+		File cf = new File(path);
+		try {
 			cf.createNewFile();
-			FileOutputStream outputStream = new  FileOutputStream(cf);
-	    	outputStream.write(file.getBytes());
-	    	outputStream.close();
+			FileOutputStream outputStream = new FileOutputStream(cf);
+			outputStream.write(file.getBytes());
+			outputStream.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			filename = null;
 		}
-    	
-    	
 
 		return filename;
->>>>>>> 1a279f956ea978345fa534dbf5a8ba07d4ab6355
+	}else {
+		return "Not valid extension";
+		}
 	}
 
 }
