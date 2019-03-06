@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	public APiStatus<User> login(Login login) {
 		// TODO Auto-generated method stub
 
-		User user2 = userRepo.findByEmailOrUserNameAndDeletedFalse(login.getEmail(), login.getUsername());
+		User user2 = userRepo.findByEmailOrUserNameAndDeletedFalse(login.getEmail(), login.getEmail());
 		if (user2 != null) {
 
 			return (login.getPassword().equals(user2.getPassword()))
