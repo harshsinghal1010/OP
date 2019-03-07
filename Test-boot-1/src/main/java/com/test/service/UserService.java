@@ -19,4 +19,5 @@ public interface UserService {
 	public APiStatus<User> updateUser(int id, User user);
 	List<User> getAllUser(int page, int limit);
 	public String imageUpload(MultipartFile file) throws IOException;
+	public List<User> getAllUsers();
 }

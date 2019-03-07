@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	
 	public User findByIdAndDeletedFalse(int id);
-	
+	public List<User> findByDeletedFalse();
 	public List<User> findByDeletedFalse(Pageable pageable);
 
 }
