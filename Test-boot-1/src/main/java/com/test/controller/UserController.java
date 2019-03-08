@@ -35,6 +35,17 @@ public class UserController {
 	@Autowired
 	private UserService service;
 
+	  @RequestMapping("/hello")
+	    public String sayHello() {
+	        int i = 5 / 0;
+	        return "hello Greetings !";
+	    }
+	  
+	  @RequestMapping("/user")
+	    public String user() {
+	        return "Hello user Greetings !";
+	    }
+	
 	@PostMapping("/register")
 	public ResponseEntity<?> saveUser(@RequestBody User user) {
 		// **************
@@ -43,10 +54,20 @@ public class UserController {
 				? ResponseEntity.status(HttpStatus.CREATED).body(status)
 				: ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
 	}
+	
+	@PostMapping("/regitrationConfirm/{id}")
+	public ResponseEntity<?> userConfirm(@PathVariable("id") Integer id) {
+		APiStatus<User> status = service.getUserById(id);
+		return (status.getStatus().equals(ResponseMessage.SUCCESS))
+				? ResponseEntity.status(HttpStatus.CREATED).body(status)
+				: ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
+
+		
+	}
 
 	@GetMapping("/getuser/id")
 	public ResponseEntity<?> getOneUser(@RequestParam("userId") int id) {
-		User u = service.getUserById(id);
+		APiStatus<User> u = service.getUserById(id);
 		if (u != null)
 			return ResponseEntity.status(HttpStatus.OK).body(u);
 		else

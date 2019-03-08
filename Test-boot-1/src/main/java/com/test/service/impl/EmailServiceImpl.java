@@ -24,7 +24,7 @@ public class EmailServiceImpl implements EmailService{
 
         try {
             helper.setTo(u.getEmail());
-            helper.setText("Greetings :)");
+            helper.setText("Greetings :)"+"http://localhost:1010"+"/regitrationConfirm?id="+u.getId());
             helper.setSubject("Mail From Spring Boot");
         } catch (MessagingException e) {
             e.printStackTrace();

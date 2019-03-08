@@ -68,10 +68,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserById(int id) {
+	public APiStatus<User> getUserById(int id) {
 		// TODO Auto-generated method stub
-
-		return userRepo.findByIdAndDeletedFalse(id);
+         User user=userRepo.findByIdAndDeletedFalse(id);
+         if(user !=null) {
+        	 user.setEnable(true);
+        	 userRepo.save(user);
+        	 return new APiStatus<User>(ResponseMessage.SUCCESS,ResponseMessage.USER_CONFIRM, user);
+         }else
+		return new APiStatus<User>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_FOUND, null);
 	}
 
 	@Override
@@ -87,10 +92,14 @@ public class UserServiceImpl implements UserService {
 
 		User user2 = userRepo.findByEmailOrUserNameAndDeletedFalse(login.getEmail(), login.getEmail());
 		if (user2 != null) {
-
+            if(user2.getEnable() == true) {
 			return (login.getPassword().equals(user2.getPassword()))
 					? new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.LOGIN_SUCCESS, user2)
 					: new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);
+            }else {
+            	return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_CONFIRM, null);
+            }
+            
 		} else {
 
 			return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);

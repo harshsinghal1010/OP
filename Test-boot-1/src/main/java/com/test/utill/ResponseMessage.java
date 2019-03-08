@@ -21,4 +21,6 @@ public class ResponseMessage {
 	public static final String INVALID_ID = "Invalid User Id";
 	public static final String INVALID_IMAGE = "Only Image Upload";
 	public static final String IMAGE_UPLOAD_ERROR = "Image Not Uploaded";
+	public static final String USER_CONFIRM="Email Verify Successfully";
+	public static final String USER_NOT_CONFIRM="Email Not Verify";
 }

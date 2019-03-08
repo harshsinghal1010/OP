@@ -12,7 +12,7 @@ import com.test.utill.Login;
 public interface UserService {
 
 	public APiStatus<User> addUser(User user);
-	public User getUserById(int id);
+	public APiStatus<User> getUserById(int id);
 	public User getUserByEmail(String email);
 	public APiStatus<User> login(Login login);
 	public APiStatus<User> deleteUser(int id);

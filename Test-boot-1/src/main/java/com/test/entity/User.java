@@ -26,7 +26,18 @@ public class User {
 	@Column
 	private String password;
 	private String image;
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	@JsonIgnore
+	private boolean enable;
 	
+	public boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean b) {
+		this.enable = b;
+	}
+
 	@Column
 	private String name;
 	private Integer age;
