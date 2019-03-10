@@ -2,8 +2,7 @@ package com.test.utill;
 
 public class ResponseMessage {
 	
-	public static final String UPLOAD_FOLDER="E:\\java material\\upload\\";
-	
+
 	public static final String SUCCESS = "Success";
 	public static final String FAILED = "Failed";
 	public static final String REGISTER_SUCCESS = "Registration Succesful";
@@ -23,4 +22,10 @@ public class ResponseMessage {
 	public static final String IMAGE_UPLOAD_ERROR = "Image Not Uploaded";
 	public static final String USER_CONFIRM="Email Verify Successfully";
 	public static final String USER_NOT_CONFIRM="Email Not Verify";
+	public static final String INVALID_INPUT="Invalid Input Parameter";
+	
+	
+	public static final String REGISTRATION_SUBJECT = "Welcome to XYZ";
+	public static final String INVALID_TOKEN = "Invalid Token";
+	
 }

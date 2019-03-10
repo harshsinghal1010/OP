@@ -29,21 +29,13 @@ public class User {
 	@Column(columnDefinition = "boolean default false", nullable = false)
 	@JsonIgnore
 	private boolean enable;
-	
-	public boolean getEnable() {
-		return enable;
-	}
-
-	public void setEnable(boolean b) {
-		this.enable = b;
-	}
 
 	@Column
 	private String name;
 	private Integer age;
 	private Long mobile;
-	
-	
+	private String token;
+
 	@Column(columnDefinition = "boolean default false", nullable = false)
 	@JsonIgnore
 	private boolean deleted;
@@ -132,6 +124,22 @@ public class User {
 		this.image = image;
 	}
 	
+	public boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean b) {
+		this.enable = b;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	
 
 }

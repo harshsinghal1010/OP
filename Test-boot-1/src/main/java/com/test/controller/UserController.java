@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.test.entity.User;
 import com.test.service.UserService;
 import com.test.utill.APiStatus;
+import com.test.utill.Config;
 import com.test.utill.Login;
 import com.test.utill.ResponseMessage;
 
@@ -55,9 +57,10 @@ public class UserController {
 				: ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
 	}
 	
-	@PostMapping("/regitrationConfirm/{id}")
-	public ResponseEntity<?> userConfirm(@PathVariable("id") Integer id) {
-		APiStatus<User> status = service.getUserById(id);
+	@GetMapping("/registrationConfirm")
+	public ResponseEntity<?> userConfirm(@RequestParam("token") String token) {
+		
+		APiStatus<User> status = service.verifyToken(token);
 		return (status.getStatus().equals(ResponseMessage.SUCCESS))
 				? ResponseEntity.status(HttpStatus.CREATED).body(status)
 				: ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(status);
@@ -65,7 +68,7 @@ public class UserController {
 		
 	}
 
-	@GetMapping("/getuser/id")
+	@GetMapping("/getuser/id")//***************************************** only enable user come
 	public ResponseEntity<?> getOneUser(@RequestParam("userId") int id) {
 		APiStatus<User> u = service.getUserById(id);
 		if (u != null)
@@ -100,24 +103,25 @@ public class UserController {
 	}
 
 	@GetMapping("/getuser/")
-	public ResponseEntity<?> getAll(@RequestParam(name = "page", defaultValue = "0") int page,
-			@RequestParam(name = "limit", defaultValue = "0") int limit) {
-		// valid pagination (done)
-		if (page == 0 && limit == 0) {
-			List<User> u = service.getAllUsers();
-			return (u != null) ? ResponseEntity.status(HttpStatus.OK).body(u)
-					: ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_NOT_FOUND);
-		} else if (page >= 0) {
-			if (limit > 0) {
-				List<User> u = service.getAllUser(page, limit);
-				return (u != null) ? ResponseEntity.status(HttpStatus.OK).body(u)
-						: ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResponseMessage.USER_NOT_FOUND);
-			} else {
-				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("not valid limit");
-			}
-		} else {
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Not valid page");
+	public ResponseEntity<?> getAll(@RequestParam(name = "page", defaultValue = "-10") int page,
+			@RequestParam(name = "limit", defaultValue = "-10") int limit) {
+
+		List<User> u;
+		if(page==-10 || limit==-10) {
+			 u = service.getAllUser("ALL",page, limit);
 		}
+		
+		else if(page >=0 && limit >0) {
+			 u = service.getAllUser("PAGE",page, limit);
+		}
+		else {
+			return errorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ResponseMessage.INVALID_INPUT);
+		}
+		return (!CollectionUtils.isEmpty(u))?  ResponseEntity.status(HttpStatus.OK).body(u):
+			errorResponse(HttpStatus.UNPROCESSABLE_ENTITY, ResponseMessage.USER_NOT_FOUND);
+		
+		
+		
 	}
 
 	@DeleteMapping("/deleteuser/{id}")
@@ -155,7 +159,7 @@ public class UserController {
 	@GetMapping("download")
 	private ResponseEntity<?> downloadFile(@RequestParam("filename") String filename) throws IOException {
 
-		File file = new File(ResponseMessage.UPLOAD_FOLDER + filename);
+		File file = new File(Config.UPLOAD_FOLDER + filename);
 		if (file.exists()) {
 			InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
