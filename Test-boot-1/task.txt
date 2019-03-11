@@ -1,4 +1,4 @@
-login api
+login api(solved)
 getuser/id api
 only enabled user can login
 forget password --> email --mail--api--password

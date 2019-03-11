@@ -28,10 +28,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private BCryptPasswordEncoder encoder;
-	
+
 	@Autowired
 	private Utill util;
-	
 
 	@Override
 	public APiStatus<User> addUser(User user) {
@@ -40,20 +39,20 @@ public class UserServiceImpl implements UserService {
 		if (userRepo.findByEmailAndDeletedFalse(user.getEmail()) == null) {
 			if (userRepo.findByUserNameAndDeletedFalse(user.getUserName()) == null) {
 				if (userRepo.findByMobileAndDeletedFalse(user.getMobile()) == null) {
-					//user.setConfirmationToken(UUID.randomUUID().toString());
+					// user.setConfirmationToken(UUID.randomUUID().toString());
 					user.setPassword(encoder.encode(user.getPassword()));
 					String token = util.generateToken();
 					user.setToken(token);
 					User u = userRepo.save(user);
 
-					if(u != null) {
-						String url = Config.URL+Config.REGISTER_EMAIL+token;
-						String body = "Hello "+u.getName() +", \n Email verification link "+ url;
-						util.sendMail(u.getEmail(),ResponseMessage.REGISTRATION_SUBJECT , body);
-							return new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.REGISTER_SUCCESS, user);
-					}else {	
-							return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.REGISTER_FAILED, null);
-			
+					if (u != null) {
+						String url = Config.URL + Config.REGISTER_EMAIL + token;
+						String body = "Hello " + u.getName() + ", \n Email verification link " + url;
+						util.sendMail(u.getEmail(), ResponseMessage.REGISTRATION_SUBJECT, body);
+						return new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.REGISTER_SUCCESS, user);
+					} else {
+						return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.REGISTER_FAILED, null);
+
 					}
 				} else {
 					return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.MOBILE_EXIST, null);
@@ -72,19 +71,25 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public APiStatus<User> getUserById(int id) {
 		// TODO Auto-generated method stub
-         User user=userRepo.findByIdAndDeletedFalse(id);
-         if(user !=null) {
-       
-        	 return new APiStatus<User>(ResponseMessage.SUCCESS,ResponseMessage.USER_CONFIRM, user);
-         }else
-		return new APiStatus<User>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_FOUND, null);
+		User user = userRepo.findByIdAndDeletedFalse(id);
+		if (user != null) {
+			if (user.getEnable() == true) {
+
+				return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USER_FOUND, null);
+
+			} else {
+				return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_CONFIRM, null);
+			}
+
+		} else
+			return new APiStatus<User>(ResponseMessage.FAILED, ResponseMessage.INVALID_ID, null);
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
 		// TODO Auto-generated method stub
 
-		return userRepo.findByEmailAndDeletedFalse(email);
+		return userRepo.findByEmailAndDeletedFalseAndEnableTrue(email);
 	}
 
 	@Override
@@ -93,14 +98,14 @@ public class UserServiceImpl implements UserService {
 
 		User user2 = userRepo.findByEmailOrUserNameAndDeletedFalse(login.getEmail(), login.getEmail());
 		if (user2 != null) {
-            if(user2.getEnable() == true) {
-			return (login.getPassword().equals(user2.getPassword()))
-					? new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.LOGIN_SUCCESS, user2)
-					: new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);
-            }else {
-            	return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_CONFIRM, null);
-            }
-            
+			if (user2.getEnable() == true) {
+				return (encoder.matches(login.getPassword(), user2.getPassword()))
+						? new APiStatus<>(ResponseMessage.SUCCESS, ResponseMessage.LOGIN_SUCCESS, user2)
+						: new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);
+			} else {
+				return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.USER_NOT_CONFIRM, null);
+			}
+
 		} else {
 
 			return new APiStatus<>(ResponseMessage.FAILED, ResponseMessage.LOGIN_ERROR, null);
@@ -112,7 +117,7 @@ public class UserServiceImpl implements UserService {
 	public APiStatus<User> deleteUser(int id) {
 		// TODO Auto-generated method stub
 
-		User u = userRepo.findByIdAndDeletedFalse(id);
+		User u = userRepo.findByIdAndDeletedFalseAndEnableTrue(id);
 		if (u != null) {
 			u.setDeleted(true);
 			userRepo.save(u);
@@ -127,7 +132,7 @@ public class UserServiceImpl implements UserService {
 	public APiStatus<User> updateUser(int id, User user) {
 		// TODO Auto-generated method stub
 
-		User u = userRepo.findByIdAndDeletedFalse(id);
+		User u = userRepo.findByIdAndDeletedFalseAndEnableTrue(id);
 
 		if (u != null) {
 			u.setAddress(user.getAddress());
@@ -143,18 +148,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getAllUser(String type , int page, int limit) {
-	
-		return (type.equals("ALL"))?userRepo.findByDeletedFalse():
-		 userRepo.findByDeletedFalse(PageRequest.of(page, limit));
+	public List<User> getAllUser(String type, int page, int limit) {
+
+		return (type.equals("ALL")) ? userRepo.findByDeletedFalseAndEnableTrue()
+				: userRepo.findByDeletedFalseAndEnableTrue(PageRequest.of(page, limit));
 
 	}
 
 	@Override
 	public String imageUpload(MultipartFile file) {
 		// TODO Auto-generated method stub
-		
-    
+
 		String filename = util.generateUniqueFileName() + file.getOriginalFilename();
 		String path = Config.UPLOAD_FOLDER + filename;
 		File cf = new File(path);
@@ -170,21 +174,20 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return filename;
-	
+
 	}
 
 	@Override
 	public APiStatus<User> verifyToken(String token) {
 		// TODO Auto-generated method stub
 		User user = userRepo.findByTokenAndDeletedFalse(token);
-		if(user!=null) {
+		if (user != null) {
 			user.setToken(null);
 			user.setEnable(true);
 			userRepo.save(user);
-			return new APiStatus<User>(ResponseMessage.SUCCESS,ResponseMessage.USER_CONFIRM, user);
-        }else
-		return new APiStatus<User>(ResponseMessage.FAILED, ResponseMessage.INVALID_TOKEN, null);
+			return new APiStatus<User>(ResponseMessage.SUCCESS, ResponseMessage.USER_CONFIRM, user);
+		} else
+			return new APiStatus<User>(ResponseMessage.FAILED, ResponseMessage.INVALID_TOKEN, null);
 	}
-
 
 }

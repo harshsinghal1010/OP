@@ -11,7 +11,7 @@ public class ResponseMessage {
 	public static final String USERNAME_EXIST = "User Name Already Exist";
 	public static final String MOBILE_EXIST = "Mobile Number Already Exist";
 	
-
+	public static final String USER_FOUND = "User Found Successfully";
 	public static final String USER_NOT_FOUND = "User Not Found";
 	public static final String DELETE_SUCCESS = "Delete Succesful";
 	public static final String LOGIN_SUCCESS = "Login Succesful";

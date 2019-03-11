@@ -12,17 +12,17 @@ import com.test.entity.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 
-	public User findByEmailAndDeletedFalse (String email);
-	
+	public User findByEmailAndDeletedFalseAndEnableTrue (String email);
+	public User findByEmailAndDeletedFalse(String email);
 	public User findByUserNameAndDeletedFalse(String username);
 	public User findByMobileAndDeletedFalse(Long mobile);
 	public User findByEmailOrUserNameAndDeletedFalse(String email,String username);
 	public User findByPasswordAndDeletedFalse (String password);
 
-	
 	public User findByIdAndDeletedFalse(int id);
-	public List<User> findByDeletedFalse();
-	public List<User> findByDeletedFalse(Pageable pageable);
+	public User findByIdAndDeletedFalseAndEnableTrue(int id);
+	public List<User> findByDeletedFalseAndEnableTrue();
+	public List<User> findByDeletedFalseAndEnableTrue(Pageable pageable);
 	
 	public User findByTokenAndDeletedFalse(String token);
 
