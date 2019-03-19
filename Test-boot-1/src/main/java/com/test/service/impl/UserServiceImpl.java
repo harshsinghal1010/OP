@@ -3,6 +3,7 @@ package com.test.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.test.entity.Role;
 import com.test.entity.User;
+import com.test.repository.RoleRepository;
 import com.test.repository.UserRepository;
 import com.test.service.UserService;
 import com.test.utill.APiStatus;
@@ -25,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private RoleRepository roleRepo;
 
 	@Autowired
 	private BCryptPasswordEncoder encoder;
@@ -43,6 +49,12 @@ public class UserServiceImpl implements UserService {
 					user.setPassword(encoder.encode(user.getPassword()));
 					String token = util.generateToken();
 					user.setToken(token);
+					
+					Role role = roleRepo.findById(user.getRoles().get(0).getId()).orElse(null);
+					List<Role> roles = new ArrayList<>();
+					roles.add(role);
+					user.setRoles(roles);
+					
 					User u = userRepo.save(user);
 
 					if (u != null) {
