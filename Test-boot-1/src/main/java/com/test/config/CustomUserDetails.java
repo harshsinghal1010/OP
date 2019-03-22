@@ -27,6 +27,7 @@ public class CustomUserDetails implements UserDetailsService {
     	
     	
     	User user = repo.findByEmailOrUserNameAndDeletedFalse(username, username);
+    	
     	if(user==null)
     		return null;
     	else {
